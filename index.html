@@ -1,0 +1,88 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; media-src 'self' blob: data:; connect-src 'none'">
+<title>Pip</title><link rel="icon" href="icon-192.png"><link rel="stylesheet" href="app.css"></head><body>
+<div id="sessbar" hidden></div>
+<header id="strip">
+  <div id="sentence" aria-live="polite"></div>
+  <button id="undo" class="ctl" aria-label="Undo"></button>
+  <button id="clear" class="ctl" aria-label="Clear"></button>
+  <button id="speak" class="ctl speak" aria-label="Speak"></button>
+</header>
+<nav id="tabs"><button data-tab="core" class="on">Core words</button><button data-tab="mine">My words</button><span id="micdot" hidden title="Listening for talking">●</span><button id="bookbtn" aria-label="Sticker book">★ Stickers</button><button id="parent" aria-label="Parent (hold)">Parent · hold</button></nav>
+<button id="lvlcard" class="lvlcard" hidden></button>
+<p id="sleepnote" class="sleepnote" hidden>Pip is sleeping. Talking still works.</p>
+<main id="grid"></main>
+<div id="reward" aria-hidden="true"></div>
+<div id="toast" class="toast" role="status" hidden></div>
+<div id="book" class="modal" hidden><div class="card wide"><div class="phead"><h2>Sticker book</h2><button class="link" data-close>Done</button></div>
+  <div id="bookgrid" class="bookgrid"></div><h3>Stars this week</h3><div id="chart" class="chart"></div></div></div>
+<div id="gate" class="modal" hidden><div class="card"><h2>Grown-ups only</h2><p id="gq"></p><div id="gans"></div><button class="link" data-close>Cancel</button></div></div>
+<div id="panel" class="modal" hidden><div class="card wide">
+  <div class="phead"><h2>Parent area</h2><button class="link" data-close>Done</button></div>
+  <div class="ptabs"><button data-p="settings" class="on">Settings</button><button data-p="words">My words</button><button data-p="model">Model mode</button><button data-p="stats">Stats</button><button data-p="premium">Premium</button></div>
+  <section data-sec="settings">
+    <label>Voice <select id="voice"></select></label>
+    <label>Speed <input id="rate" type="range" min="0.5" max="1.5" step="0.05"></label>
+    <label>Pitch <input id="pitch" type="range" min="0.5" max="1.8" step="0.05"></label>
+    <h3>Sentence length</h3>
+    <label>Words in the strip <select id="slen"><option value="1">1 word</option><option value="2">2 words</option><option value="3">3 words</option><option value="full">Full sentence</option></select></label>
+    <label class="row"><input id="autolvl" type="checkbox"> Level up automatically (suggest the next level; you decide)</label>
+    <label>Suggest after this many spoken sentences <input id="lvlgoal" type="number" min="1" max="200" step="1" inputmode="numeric"></label>
+    <p class="note" id="lvlprog"></p>
+    <div id="lvlsug" class="lvlsug" hidden><p id="lvlsugt"></p><button id="lvlyes" class="btn">Move up</button> <button id="lvlno" class="btn">Not now</button></div>
+    <h3>Reward growth</h3>
+    <label>Reward growth <select id="growth"><option value="off">Off</option><option value="slow">Slow</option><option value="normal">Normal</option><option value="big">Big</option></select></label>
+    <label>Biggest celebration <select id="growcap"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
+    <label>Sticker every this many spoken sentences <input id="stickgoal" type="number" min="1" max="100" step="1" inputmode="numeric"></label>
+    <label class="row"><input id="lvlsticker" type="checkbox"> Moving up a sentence level also earns a sticker</label>
+    <p class="note">Celebrations grow a little with each success in a row and settle back quietly. Nothing earned is ever taken away. Follows Speak celebration below and the device's reduce-motion setting. Sounds stay quiet.</p>
+    <p class="note" id="growprog"></p>
+    <h3>Pip sounds &amp; dance</h3>
+    <p class="note">Plays only after your child speaks with Pip (or a talking try), for at most 3 seconds, never on its own and never on repeat. New sounds and dances unlock at fixed sticker counts.</p>
+    <label>Sound set <select id="soundset"></select></label>
+    <label>Dance <select id="dance"></select></label>
+    <label>Pitch range <select id="pitchr"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
+    <label>Volume cap <span id="volv"></span> <input id="volcap" type="range" min="10" max="70" step="5"></label>
+    <label>Reward length <select id="rlen"><option value="1">1 second</option><option value="2">2 seconds</option><option value="3">3 seconds</option></select></label>
+    <label class="row"><input id="softon" type="checkbox"> Soft starts (no sudden sounds)</label>
+    <div><button id="softpreset" class="btn" type="button">Sound-sensitive preset</button> <button id="preview" class="btn" type="button">Preview</button></div>
+    <p class="note" id="softnote" hidden>Sound-sensitive: soft chimes, low pitch, 30% volume, 1 second, tap sounds off.</p>
+    <h3>Session timer</h3>
+    <label>Goodnight Pip after <select id="session"><option value="0">Off</option><option value="10">10 minutes</option><option value="15">15 minutes</option><option value="20">20 minutes</option><option value="30">30 minutes</option></select></label>
+    <p class="note" id="sessinfo"></p><button id="wake" class="btn" type="button">Wake Pip / restart timer</button>
+    <h3>Tap effects</h3>
+    <label>Effect style <select id="fx"><option value="off">Off</option><option value="bounce">Gentle bounce</option><option value="glow">Glow</option><option value="both">Bounce + glow</option></select></label>
+    <label>Intensity <select id="fxlvl"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
+    <label class="row"><input id="haptic" type="checkbox"> Haptic buzz on tap</label>
+    <label>Tap sound <select id="tapsound"><option value="off">Off</option><option value="click">Soft click</option><option value="pop">Pop</option></select></label>
+    <label>Speak celebration (rewards) <select id="intensity"><option value="off">Off</option><option value="calm">Calm</option><option value="fun">Fun</option></select></label>
+    <p class="note" id="rmnote" hidden>This device asks for reduced motion, so bounce and celebrations stay still. Glow and sound still work.</p>
+    <button class="w fxtry" id="fxtry" type="button" aria-label="Try tap effect">Try it</button>
+    <label>Reward sound <select id="sound"><option value="on">On</option><option value="off">Off</option></select></label>
+    <label class="row"><input id="speakword" type="checkbox"> Speak each word when tapped</label>
+    <label class="row"><input id="mic" type="checkbox"> Reward when my child tries to talk (microphone, stays on this device, nothing is recorded or saved)</label>
+    <label>Talk sensitivity <input id="micsens" type="range" min="1" max="10" step="1"></label>
+    <button id="test" class="btn">Test voice</button>
+  </section>
+  <section data-sec="words" hidden>
+    <div class="addw"><div id="ppreview" class="ph">No photo</div>
+      <div><label class="btn file">Take photo<input id="cam" type="file" accept="image/*" capture="environment" hidden></label>
+      <label class="btn file">Choose from gallery<input id="gal" type="file" accept="image/*" hidden></label>
+      <input id="wlabel" placeholder="Word (e.g. Grandma)" maxlength="30">
+      <button id="wadd" class="btn primary">Add word</button></div></div>
+    <ul id="wlist"></ul>
+  </section>
+  <section data-sec="model" hidden>
+    <p>Pick a word. When you close this panel, the app shows where it is so you can tap it while you talk (aided language modeling). Taps while modeling still speak, but don't count in stats.</p>
+    <input id="mq" placeholder="Find a word"><div id="mres"></div>
+    <label class="row"><input id="modelon" type="checkbox"> Model mode on (show a hand on the target word)</label>
+  </section>
+  <section data-sec="stats" hidden><div id="statsout"></div><button id="sreset" class="btn">Reset stats</button></section>
+  <section data-sec="premium" hidden>
+    <p><b>Talking is always free.</b> Every word, voice and reward stays free forever.</p>
+    <p>Premium (coming later, one-time): extra vocabulary packs, more reward styles, backup to a file.</p>
+    <button id="buy" class="btn" disabled>Premium: not available yet</button>
+  </section>
+</div></div>
+<script src="icons.js"></script><script src="app.js"></script><script src="pip.js"></script></body></html>
