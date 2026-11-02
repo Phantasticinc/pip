@@ -94,3 +94,14 @@ input[type=checkbox]{width:24px;height:24px}
 #sessbar{position:fixed;top:0;left:0;height:4px;background:#9fb4a8;z-index:50;transition:width 4s linear,background-color 2s}
 #sessbar.sleepy{background:#b8a6d9}#sessbar[hidden]{display:none}
 .sleepnote{margin:4px 10px;padding:6px 12px;border-radius:10px;background:#1c2128;color:#b8c2d9;font-size:.9rem}.sleepnote[hidden]{display:none}
+#break{position:fixed;inset:0;z-index:9;background:#0b0e12;display:flex;flex-direction:column;opacity:0;transition:opacity .8s ease}
+#break.in{opacity:1}#break.out{opacity:0}#break[hidden]{display:none}
+.brkbar{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;color:#c9d3dd}
+#brkparent{background:#0008;color:#fff;border:1px solid #fff3;border-radius:10px;padding:10px 14px;font:inherit}
+.brkweb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#c9d3dd;text-align:center;padding:24px}.brkweb p:first-child{font-size:1.6rem}
+#calm{position:fixed;inset:0;z-index:70;background:#0d1b26;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity .6s}
+#calm.in{opacity:1}#calm[hidden]{display:none}#calm p{color:#d6e4ee;font-size:1.3rem;text-align:center;max-width:80%}
+.breath{width:40vmin;height:40vmin;border-radius:50%;background:radial-gradient(circle,#8fd3c7,#4f8fa8);animation:breathe 8s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(.6)}50%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.breath{animation:none;transform:scale(.8)}}
+.trow{display:flex;justify-content:space-between;align-items:center}.guide{margin:6px 0;color:#c9d3dd}.guide li{margin:4px 0}

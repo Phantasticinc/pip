@@ -151,18 +151,18 @@ let holdT,holdStart;const pb=$('#parent');pb.innerHTML='Parent · hold<span clas
 const hold=e=>{e.preventDefault();if(!e.isPrimary){unhold();return;}holdStart=Date.now();const f=pb.querySelector('.fill');f.style.transition='width 2s linear';f.style.width='100%';holdT=setTimeout(openGate,2000);};
 const unhold=()=>{clearTimeout(holdT);const f=pb.querySelector('.fill');f.style.transition='none';f.style.width='0';};
 pb.addEventListener('pointerdown',hold);['pointerup','pointerleave','pointercancel'].forEach(ev=>pb.addEventListener(ev,unhold));
-let gateLock=0,gateFails=0;window.__gateOpens=0;
-function openGate(){unhold();if(Date.now()<gateLock)return;ask(3);$('#gate').hidden=false;}
+let gateLock=0,gateFails=0,gateNext=null;window.__gateOpens=0;
+function openGate(next){unhold();gateNext=typeof next==='function'?next:null;if(Date.now()<gateLock)return false;ask(3);$('#gate').hidden=false;return true;}
 function ask(left){const a=3+Math.floor(Math.random()*7),b=3+Math.floor(Math.random()*7),ans=a+b;
  const opts=[ans,ans+1,ans+3,ans-2].sort(()=>Math.random()-.5);$('#gq').textContent=`${a} + ${b} = ?`+`  (${4-left} of 3)`;
  $('#gans').innerHTML='';opts.forEach(o=>{const x=document.createElement('button');x.textContent=o;x.setAttribute('aria-label','Answer '+o);
-  x.onclick=()=>{if(o!==ans){$('#gate').hidden=true;gateFails++;gateLock=Date.now()+Math.min(600000,30000*2**(gateFails-1));return;}if(left>1)return ask(left-1);$('#gate').hidden=true;gateFails=0;window.__gateOpens++;openPanel();};$('#gans').appendChild(x);});}
+  x.onclick=()=>{if(o!==ans){$('#gate').hidden=true;gateFails++;if(gateNext&&window.gateFailed)gateFailed();gateNext=null;gateLock=Date.now()+Math.min(600000,30000*2**(gateFails-1));return;}if(left>1)return ask(left-1);$('#gate').hidden=true;gateFails=0;window.__gateOpens++;const nx=gateNext;gateNext=null;(nx||openPanel)();};$('#gans').appendChild(x);});}
 $$('[data-close]').forEach(b=>b.onclick=()=>{b.closest('.modal').hidden=true;render();});
 // ---------- parent panel ----------
 $$('.ptabs button').forEach(b=>b.onclick=()=>{$$('.ptabs button').forEach(x=>x.classList.toggle('on',x===b));$$('[data-sec]').forEach(s=>s.hidden=s.dataset.sec!==b.dataset.p);if(b.dataset.p==='stats')renderStats();});
 async function openPanel(){const st=S.settings;$('#panel').hidden=false;
  const vs=await voices();$('#voice').innerHTML='<option value="">Device default</option>'+vs.map((v,i)=>`<option value="${i}">${esc(v)}</option>`).join('');$('#voice').value=st.voice;
- ['rate','pitch','intensity','sound','micsens','fx','fxlvl','tapsound'].forEach(k=>$('#'+k).value=st[k]);$('#haptic').checked=st.haptic;if(window.pipPanel)pipPanel();$('#growth').value=st.growth;$('#growcap').value=st.growcap;$('#stickgoal').value=st.stickgoal;$('#lvlsticker').checked=st.lvlsticker;$('#growprog').textContent=`Sentences spoken: ${S.coll.n}. Next sticker in ${st.stickgoal-S.coll.n%st.stickgoal}. Stickers earned: ${S.coll.stickers.length}.`;$('#slen').value=st.slen;$('#autolvl').checked=st.autolvl;$('#lvlgoal').value=st.lvlgoal;showLvlCard();$('#rmnote').hidden=!RM.matches;$('#speakword').checked=st.speakword;$('#mic').checked=st.mic;$('#modelon').checked=!!st.model;renderWList();}
+ ['rate','pitch','intensity','sound','micsens','fx','fxlvl','tapsound'].forEach(k=>$('#'+k).value=st[k]);$('#haptic').checked=st.haptic;if(window.pipPanel)pipPanel();if(window.lockPanel)lockPanel();$('#growth').value=st.growth;$('#growcap').value=st.growcap;$('#stickgoal').value=st.stickgoal;$('#lvlsticker').checked=st.lvlsticker;$('#growprog').textContent=`Sentences spoken: ${S.coll.n}. Next sticker in ${st.stickgoal-S.coll.n%st.stickgoal}. Stickers earned: ${S.coll.stickers.length}.`;$('#slen').value=st.slen;$('#autolvl').checked=st.autolvl;$('#lvlgoal').value=st.lvlgoal;showLvlCard();$('#rmnote').hidden=!RM.matches;$('#speakword').checked=st.speakword;$('#mic').checked=st.mic;$('#modelon').checked=!!st.model;renderWList();}
 ['voice','rate','pitch','intensity','sound','micsens','fx','fxlvl','tapsound'].forEach(k=>$('#'+k).onchange=()=>{const v=$('#'+k).value;S.settings[k]=['rate','pitch','micsens'].includes(k)?+v:v;save();});
 $('#haptic').onchange=e=>{S.settings.haptic=e.target.checked;save();if(e.target.checked&&navigator.vibrate)navigator.vibrate(12);};
 $('#fxtry').onclick=e=>tapFx(e.currentTarget);

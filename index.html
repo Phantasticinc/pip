@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow">
+<!doctype html><html lang="en"><head><meta name="robots" content="noindex,nofollow"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; media-src 'self' blob: data:; connect-src 'none'">
 <title>Pip</title><link rel="icon" href="icon-192.png"><link rel="stylesheet" href="app.css"></head><body>
@@ -17,6 +17,9 @@
 <div id="toast" class="toast" role="status" hidden></div>
 <div id="book" class="modal" hidden><div class="card wide"><div class="phead"><h2>Sticker book</h2><button class="link" data-close>Done</button></div>
   <div id="bookgrid" class="bookgrid"></div><h3>Stars this week</h3><div id="chart" class="chart"></div></div></div>
+<div id="break" hidden><div class="brkbar"><span id="brktime">Break time</span><button id="brkparent" type="button">Parent · hold</button></div>
+<div class="brkweb" id="webnote"><p>Break time</p><p class="note">In the Android app, YouTube plays here, inside Pip. This browser preview can't show it, so the talk grid stays offline.</p></div></div>
+<div id="calm" hidden aria-live="polite"><div class="breath"></div><p id="calmtext"></p></div>
 <div id="gate" class="modal" hidden><div class="card"><h2>Grown-ups only</h2><p id="gq"></p><div id="gans"></div><button class="link" data-close>Cancel</button></div></div>
 <div id="panel" class="modal" hidden><div class="card wide">
   <div class="phead"><h2>Parent area</h2><button class="link" data-close>Done</button></div>
@@ -48,6 +51,34 @@
     <label class="row"><input id="softon" type="checkbox"> Soft starts (no sudden sounds)</label>
     <div><button id="softpreset" class="btn" type="button">Sound-sensitive preset</button> <button id="preview" class="btn" type="button">Preview</button></div>
     <p class="note" id="softnote" hidden>Sound-sensitive: soft chimes, low pitch, 30% volume, 1 second, tap sounds off.</p>
+    <h3>Child lock</h3>
+    <label class="row"><input id="lockon" type="checkbox"> Lock to Pip (Android screen pinning)</label>
+    <p class="note" id="lockinfo"></p>
+    <details class="guide"><summary>How to turn on screen pinning</summary><ol>
+      <li>Open Android <b>Settings → Security (or Security &amp; privacy) → More security settings → App pinning</b>. Turn it on.</li>
+      <li>Turn on <b>Ask for PIN before unpinning</b> so a child can't unpin.</li>
+      <li>Come back here and tick <b>Lock to Pip</b>. Android asks once to confirm.</li>
+      <li>To unlock, hold <b>Parent</b>, answer the questions, and untick Lock to Pip.</li></ol>
+      <p class="note">For a phone used only for Pip, see “Dedicated device” in the README (needs a computer and adb).</p></details>
+    <label class="row"><input id="vollock" type="checkbox"> Keep the volume at</label>
+    <label>Volume <span id="vollv"></span> <input id="vollvl" type="range" min="0" max="100" step="5"></label>
+    <h3>Break time</h3>
+    <p class="note">Shows YouTube inside Pip while it stays locked. Only break time uses the internet; talking stays offline.</p>
+    <label>Break length <select id="brkmin"><option value="0">No timer</option><option value="5">5 minutes</option><option value="10">10 minutes</option><option value="15">15 minutes</option><option value="20">20 minutes</option><option value="30">30 minutes</option></select></label>
+    <button id="brkstart" class="btn" type="button">Start break time</button>
+    <h3>Calm-down helper (break time only)</h3>
+    <p class="note">Listens on this device during break time only. No audio is recorded, saved or sent: Pip keeps a few numbers that describe each sound you teach.</p>
+    <label class="row"><input id="calmon" type="checkbox"> Turn on calm-down helper</label>
+    <label>Sound name <input id="tname" type="text" maxlength="30" placeholder="e.g. whining"></label>
+    <button id="teach" class="btn" type="button">Hold to teach this sound</button><p class="note" id="teachmsg"></p>
+    <div id="tsounds"></div>
+    <label>Sensitivity <input id="calmsens" type="range" min="1" max="10" step="1"></label>
+    <label>Must last <select id="calmsus"><option value="1">1 second</option><option value="2">2 seconds</option><option value="3">3 seconds</option><option value="5">5 seconds</option></select></label>
+    <label>Wait between calm-downs <select id="calmcd"><option value="1">1 minute</option><option value="2">2 minutes</option><option value="5">5 minutes</option><option value="10">10 minutes</option></select></label>
+    <label>Breathing time <select id="calmlen"><option value="10">10 seconds</option><option value="15">15 seconds</option><option value="20">20 seconds</option></select></label>
+    <label>Calming words <input id="calmphrase" type="text" maxlength="160"></label>
+    <label class="row"><input id="calmmusic" type="checkbox"> Soft music</label>
+    <button id="calmtry" class="btn" type="button">Preview calm-down</button>
     <h3>Session timer</h3>
     <label>Goodnight Pip after <select id="session"><option value="0">Off</option><option value="10">10 minutes</option><option value="15">15 minutes</option><option value="20">20 minutes</option><option value="30">30 minutes</option></select></label>
     <p class="note" id="sessinfo"></p><button id="wake" class="btn" type="button">Wake Pip / restart timer</button>
@@ -85,4 +116,4 @@
     <button id="buy" class="btn" disabled>Premium: not available yet</button>
   </section>
 </div></div>
-<script src="icons.js"></script><script src="app.js"></script><script src="pip.js"></script></body></html>
+<script src="icons.js"></script><script src="app.js"></script><script src="pip.js"></script><script src="lock.js"></script></body></html>
